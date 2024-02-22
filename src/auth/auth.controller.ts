@@ -1,4 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -20,7 +26,7 @@ export class AuthController {
     const { email, password } = loginUserDto;
     const user = await this.authService.validateEmail(email, password);
     if (!user) {
-      return { message: 'Correo o contraseña incorrectos' };
+      throw new UnauthorizedException('Correo o contraseña incorrectos');
     }
     const token = await this.authService.generateJwtToken(user);
     return {

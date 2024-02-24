@@ -15,6 +15,12 @@ export class ProjectService {
   }
 
   async get() {
-    return await this.projectModel.find();
+    return await this.projectModel
+      .find()
+      .select('_id name description updatedAt createdAt');
+  }
+
+  async delete(id: string, owner: string) {
+    return await this.projectModel.findOneAndDelete({ _id: id, owner });
   }
 }

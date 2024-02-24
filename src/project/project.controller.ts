@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Post,
   Request,
   UseGuards,
@@ -30,6 +31,10 @@ export class ProjectController {
     const { id } = req.user;
     const owner = id.toString();
     const { name, description } = createProjectDto;
+    const exists = await this.projectService.exists(name, owner);
+    if (exists) {
+      throw new HttpException('El proyecto ya existe', 409);
+    }
     const project = await this.projectService.create(name, owner, description);
     return {
       message: 'Proyecto creado',

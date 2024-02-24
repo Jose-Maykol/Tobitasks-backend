@@ -23,4 +23,8 @@ export class ProjectService {
   async delete(id: string, owner: string) {
     return await this.projectModel.findOneAndDelete({ _id: id, owner });
   }
+
+  async exists(name: string, owner: string) {
+    return await this.projectModel.exists({ name, owner });
+  }
 }

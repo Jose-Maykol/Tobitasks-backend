@@ -54,6 +54,9 @@ export class Project {
   categories: Category[];
 
   @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
   updatedAt: Date;
 }
 

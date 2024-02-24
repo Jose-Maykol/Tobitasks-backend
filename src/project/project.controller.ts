@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Request,
@@ -16,7 +17,8 @@ export class ProjectController {
 
   @Get()
   async get() {
-    return await this.projectService.get();
+    const projects = await this.projectService.get();
+    return projects;
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -33,5 +35,18 @@ export class ProjectController {
       message: 'Proyecto creado',
       projectId: project._id,
     };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
+  async delete(@Request() req: any) {
+    const { id } = req.user;
+    const owner = id.toString();
+    const { id: projectId } = req.params;
+    const project = await this.projectService.delete(projectId, owner);
+    if (!project) {
+      return { message: 'Proyecto no encontrado' };
+    }
+    return { message: 'Proyecto eliminado' };
   }
 }

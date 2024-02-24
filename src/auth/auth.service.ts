@@ -33,10 +33,14 @@ export class AuthService {
     };
   }
 
-  async validateJwtToken(token: string) {
+  async validateJwtToken(token: any) {
     try {
-      const decoded = this.jwtService.verify(token);
-      return { email: decoded.email, id: decoded.sub };
+      const { email } = token;
+      const user = await this.userModel.findOne({ email });
+      if (!user) {
+        return null;
+      }
+      return { email: user.email, id: user._id };
     } catch (error) {
       return null;
     }

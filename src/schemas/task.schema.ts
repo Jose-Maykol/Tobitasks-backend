@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { Category } from './category.schema';
-import { Status } from './status.schema';
+import { HydratedDocument, SchemaTypes } from 'mongoose';
 
 export type TaskDocument = HydratedDocument<Task>;
 
@@ -23,17 +21,29 @@ export class Task {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ type: Status, required: true })
-  status: Status;
+  /* @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
+  owner: string; */
 
-  @Prop({ type: Category, required: true })
-  category: Category;
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Status', required: true })
+  status: string;
 
-  @Prop({ enum: ['Facil', 'Media', 'Difícil'], required: true })
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Category' })
+  category: string;
+
+  @Prop({ enum: ['Facil', 'Media', 'Difícil'], default: 'Media' })
   difficulty: string;
 
   @Prop({ default: Date.now })
-  date: Date;
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
+
+  /* @Prop({ required: true })
+  startDate: Date;
+
+  @Prop({ required: true })
+  endDate: Date; */
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

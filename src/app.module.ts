@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongodbConfigService } from './mongodb.config.service';
 import { ProjectModule } from './project/project.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProjectModule } from './project/project.module';
       useClass: MongodbConfigService,
     }),
     ProjectModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],

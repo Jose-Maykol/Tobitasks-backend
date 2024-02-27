@@ -27,4 +27,11 @@ export class ProjectService {
   async exists(name: string, owner: string) {
     return await this.projectModel.exists({ name, owner });
   }
+
+  async addTask(projectId: string, taskId: string) {
+    return await this.projectModel.updateOne(
+      { _id: projectId },
+      { $push: { tasks: taskId } },
+    );
+  }
 }

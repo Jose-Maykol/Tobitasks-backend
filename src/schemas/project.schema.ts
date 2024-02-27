@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, SchemaTypes } from 'mongoose';
-import { Task, TaskSchema } from './task.schema';
 import { Category, CategorySchema } from './category.schema';
 import { Status, StatusSchema } from './status.schema';
 
@@ -33,8 +32,8 @@ export class Project {
   @Prop({ type: [{ type: SchemaTypes.ObjectId, ref: 'User' }], default: [] })
   users: string[];
 
-  @Prop({ type: [TaskSchema], default: [] })
-  tasks: Task[];
+  @Prop({ type: [{ type: 'ObjectId', ref: 'Task' }], default: [] })
+  tasks: string[];
 
   @Prop({
     type: [StatusSchema],

@@ -34,6 +34,7 @@ export class AuthController {
       user: {
         email: user.email,
         name: user.name,
+        profile: user.profilePicture,
       },
       token: token.access_token,
     };

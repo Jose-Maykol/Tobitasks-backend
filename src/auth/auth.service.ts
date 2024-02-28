@@ -14,7 +14,11 @@ export class AuthService {
 
   async createUser(name: string, email: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new this.userModel({ name, email, hashedPassword });
+    const newUser = new this.userModel({
+      name,
+      email,
+      password: hashedPassword,
+    });
     return await newUser.save();
   }
 

@@ -17,8 +17,23 @@ export class TaskGateway implements OnModuleInit {
   server: Server;
 
   onModuleInit() {
-    this.server.on('connection', (socket) => {
+    this.server.on('connection', async (socket) => {
       console.log(`Conectado ${socket.id}`);
+      const projectId = socket.handshake.query.projectId;
+      if (!projectId) {
+        socket.emit('error', {
+          message: 'No se ha proporcionado un project id',
+        });
+      }
+      const tasks = await this.taskService.findAllByProjectId(
+        projectId.toString(),
+      );
+      if (tasks.length > 0) {
+        this.server.emit('task', {
+          message: 'Tareas del proyecto',
+          tasks,
+        });
+      }
     });
   }
 

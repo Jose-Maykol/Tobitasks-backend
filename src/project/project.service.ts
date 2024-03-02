@@ -34,4 +34,13 @@ export class ProjectService {
       { $push: { tasks: taskId } },
     );
   }
+
+  async findAllTasks(projectId: string) {
+    const project = await this.projectModel
+      .findById(projectId)
+      .populate('tasks')
+      .select('tasks')
+      .exec();
+    return project.tasks;
+  }
 }

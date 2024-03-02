@@ -16,9 +16,13 @@ import { AuthGuard } from '@nestjs/passport';
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async get() {
     const projects = await this.projectService.get();
+    if (projects.length === 0) {
+      throw new HttpException('No hay proyectos', 404);
+    }
     return projects;
   }
 

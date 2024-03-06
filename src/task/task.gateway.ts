@@ -1,4 +1,5 @@
 import {
+  ConnectedSocket,
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
@@ -8,10 +9,20 @@ import { TaskService } from './task.service';
 import { Server } from 'socket.io';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { OnModuleInit } from '@nestjs/common';
+import { ProjectService } from 'src/project/project.service';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    credentials: true,
+  },
+  transports: ['websocket', 'polling'],
+})
 export class TaskGateway implements OnModuleInit {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private projectService: ProjectService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -25,7 +36,17 @@ export class TaskGateway implements OnModuleInit {
           message: 'No se ha proporcionado un project id',
         });
       }
-      const tasks = await this.taskService.findAllByProjectId(
+      const statuses = await this.projectService.findAllStatuses(
+        projectId.toString(),
+      );
+
+      if (statuses.length > 0) {
+        this.server.emit('status', {
+          message: 'Estados del proyecto',
+          statuses,
+        });
+      }
+      const tasks = await this.projectService.findAllTasks(
         projectId.toString(),
       );
       if (tasks.length > 0) {
@@ -38,8 +59,12 @@ export class TaskGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('task')
-  async onNewTask(@MessageBody() data: CreateTaskDto) {
-    const { projectId, title, description, status, category } = data;
+  async onNewTask(
+    @MessageBody() data: CreateTaskDto,
+    @ConnectedSocket() socket,
+  ) {
+    const projectId = socket.handshake.query.projectId;
+    const { title, description, status, category } = data;
     const newTask = await this.taskService.create(
       projectId,
       title,

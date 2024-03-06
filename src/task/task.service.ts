@@ -29,9 +29,4 @@ export class TaskService {
     await this.projectService.addTask(projectId, taskId);
     return savedTask;
   }
-
-  async findAllByProjectId(projectId: string) {
-    const tasks = await this.projectService.findAllTasks(projectId);
-    return tasks;
-  }
 }

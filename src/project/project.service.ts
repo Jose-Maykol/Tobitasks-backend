@@ -17,7 +17,7 @@ export class ProjectService {
   async get() {
     return await this.projectModel
       .find()
-      .select('_id name description updatedAt createdAt');
+      .select('_id name description updatedAt createdAt color');
   }
 
   async delete(id: string, owner: string) {
@@ -42,5 +42,14 @@ export class ProjectService {
       .select('tasks')
       .exec();
     return project.tasks;
+  }
+
+  async findAllStatuses(projectId: string) {
+    const project = await this.projectModel
+      .findById(projectId)
+      .populate('statuses')
+      .select('statuses')
+      .exec();
+    return project.statuses;
   }
 }

@@ -12,7 +12,7 @@ import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { AuthGuard } from '@nestjs/passport';
 
-@Controller('project')
+@Controller('projects')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
@@ -23,7 +23,7 @@ export class ProjectController {
     if (projects.length === 0) {
       throw new HttpException('No hay proyectos', 404);
     }
-    return projects;
+    return { projects };
   }
 
   @UseGuards(AuthGuard('jwt'))

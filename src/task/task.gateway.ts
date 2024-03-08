@@ -41,7 +41,7 @@ export class TaskGateway implements OnModuleInit {
       );
 
       if (statuses.length > 0) {
-        this.server.emit('status', {
+        socket.emit('status', {
           message: 'Estados del proyecto',
           statuses,
         });
@@ -50,15 +50,26 @@ export class TaskGateway implements OnModuleInit {
         projectId.toString(),
       );
       if (tasks.length > 0) {
-        this.server.emit('task', {
+        socket.emit('task', {
           message: 'Tareas del proyecto',
           tasks,
+        });
+      }
+
+      const categories = await this.projectService.findAllCategories(
+        projectId.toString(),
+      );
+
+      if (categories.length > 0) {
+        socket.emit('category', {
+          message: 'Categorias del proyecto',
+          categories,
         });
       }
     });
   }
 
-  @SubscribeMessage('task')
+  @SubscribeMessage('newTask')
   async onNewTask(
     @MessageBody() data: CreateTaskDto,
     @ConnectedSocket() socket,
@@ -75,6 +86,20 @@ export class TaskGateway implements OnModuleInit {
     this.server.emit('task', {
       message: 'Tarea creada',
       task: newTask,
+    });
+  }
+
+  @SubscribeMessage('changeTaskStatus')
+  async onChangeTaskStatus(
+    @MessageBody() data: { taskId: string; statusId: string },
+    @ConnectedSocket() socket,
+  ) {
+    console.log(data);
+    const { taskId, statusId } = data;
+    const updatedTask = await this.taskService.updateStatus(taskId, statusId);
+    socket.broadcast.emit('updateTask', {
+      message: 'Tarea actualizada',
+      task: updatedTask,
     });
   }
 }

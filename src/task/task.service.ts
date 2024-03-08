@@ -29,4 +29,14 @@ export class TaskService {
     await this.projectService.addTask(projectId, taskId);
     return savedTask;
   }
+
+  async updateStatus(taskId: string, status: string) {
+    const updatedTask = await this.taskModel.findByIdAndUpdate(
+      taskId,
+      { status },
+      { new: true },
+    );
+    console.log(updatedTask);
+    return updatedTask;
+  }
 }

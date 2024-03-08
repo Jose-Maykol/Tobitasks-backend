@@ -52,4 +52,13 @@ export class ProjectService {
       .exec();
     return project.statuses;
   }
+
+  async findAllCategories(projectId: string) {
+    const project = await this.projectModel
+      .findById(projectId)
+      .populate('categories')
+      .select('categories')
+      .exec();
+    return project.categories;
+  }
 }

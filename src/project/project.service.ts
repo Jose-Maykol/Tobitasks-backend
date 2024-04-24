@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Project, ProjectDocument } from 'src/schemas/project.schema';
 
 @Injectable()
@@ -60,5 +60,14 @@ export class ProjectService {
       .select('categories')
       .exec();
     return project.categories;
+  }
+
+  async reorderTasks(projectId: string, tasks: Types.ObjectId[]) {
+    return await this.projectModel.updateOne(
+      { _id: projectId },
+      {
+        $set: { tasks: tasks },
+      },
+    );
   }
 }

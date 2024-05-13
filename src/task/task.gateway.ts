@@ -10,6 +10,7 @@ import { Server } from 'socket.io';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { OnModuleInit } from '@nestjs/common';
 import { ProjectService } from 'src/project/project.service';
+import { Types } from 'mongoose';
 
 @WebSocketGateway({
   cors: {
@@ -69,21 +70,17 @@ export class TaskGateway implements OnModuleInit {
     });
   }
 
-  @SubscribeMessage('newTask')
-  async onNewTask(
+  @SubscribeMessage('addTask')
+  async onAddTask(
     @MessageBody() data: CreateTaskDto,
     @ConnectedSocket() socket,
   ) {
     const projectId = socket.handshake.query.projectId;
-    const { title, description, status, category } = data;
-    const newTask = await this.taskService.create(
-      projectId,
-      title,
-      description,
-      status,
-      category,
-    );
-    this.server.emit('task', {
+    const { title, status } = data;
+    console.log(data);
+    const newTask = await this.taskService.create(projectId, title, status);
+    console.log(newTask);
+    this.server.emit('newTask', {
       message: 'Tarea creada',
       task: newTask,
     });
@@ -100,6 +97,21 @@ export class TaskGateway implements OnModuleInit {
     socket.broadcast.emit('updateTask', {
       message: 'Tarea actualizada',
       task: updatedTask,
+    });
+  }
+
+  @SubscribeMessage('reorderTask')
+  async onReorderTasks(
+    @MessageBody() data: { projectId: string; tasks: string[] },
+    @ConnectedSocket() socket,
+  ) {
+    const { projectId, tasks } = data;
+    console.log(tasks);
+    const arrayObjectIdTasks = tasks.map((task) => new Types.ObjectId(task));
+    await this.projectService.reorderTasks(projectId, arrayObjectIdTasks);
+    socket.broadcast.emit('reorderTasks', {
+      message: 'Tareas actualizadas',
+      tasks: tasks,
     });
   }
 }

@@ -11,18 +11,10 @@ export class TaskService {
     private projectService: ProjectService,
   ) {}
 
-  async create(
-    projectId: string,
-    title: string,
-    description: string,
-    status: string,
-    category: string,
-  ) {
+  async create(projectId: string, title: string, status: string) {
     const newTask = new this.taskModel({
       title,
-      description,
       status,
-      category,
     });
     const savedTask = await newTask.save();
     const taskId = savedTask._id.toString();

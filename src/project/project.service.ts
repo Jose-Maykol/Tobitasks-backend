@@ -63,7 +63,7 @@ export class ProjectService {
   }
 
   async reorderTasks(projectId: string, tasks: Types.ObjectId[]) {
-    return await this.projectModel.updateOne(
+    await this.projectModel.updateOne(
       { _id: projectId },
       {
         $set: { tasks: tasks },

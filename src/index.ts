@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import connectDb from './infraestructure/config/database'
 
 dotenv.config()
 
@@ -14,6 +15,9 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// Conexión a la base de datos
+connectDb()
+
 app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 	console.log(`Request URL: ${req.originalUrl}`)
 	next()
@@ -21,7 +25,7 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 
 // Rutas
 app.get('/api', (req: Request, res: Response) => {
-	res.send('Tobitasks API')
+	res.json({ message: 'TobiTaks API' })
 })
 
 // Manejo de errores
@@ -31,5 +35,5 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
 
 // Inicializa el servidor
 app.listen(port, () => {
-	console.log(`Server is running on http://localhost:${port}`)
+	console.log(`Server is running on http://localhost:${port}/api`)
 })

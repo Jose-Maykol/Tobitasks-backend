@@ -20,7 +20,7 @@ interface IProjectMember {
 	role: string
 }
 
-interface IProject extends Document {
+export interface IProject extends Document {
 	name: string
 	description: string
 	createdBy?: Types.ObjectId

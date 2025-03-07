@@ -1,5 +1,5 @@
 import { Model } from 'mongoose'
-import { IUser, User } from '../models/user.model'
+import { IUser, User } from '../../models/user.model'
 
 export class UserRepository {
 	private userModel: Model<IUser>

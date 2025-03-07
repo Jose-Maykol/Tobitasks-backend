@@ -1,52 +1,36 @@
+// @ts-check
+import eslint from '@eslint/js';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
-import pluginJs from '@eslint/js';
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
-import eslintPluginPrettier from 'eslint-plugin-prettier';
+import tseslint from 'typescript-eslint';
 
-export default [
+export default tseslint.config(
   {
-    // Ignorar archivos y directorios
-    ignores: ['node_modules/', 'dist/', 'build/'],
+    ignores: ['eslint.config.mjs'],
   },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  eslintPluginPrettierRecommended,
   {
-    // Configuración para archivos JavaScript
-    files: ['**/*.js'],
-    ...pluginJs.configs.recommended,
     languageOptions: {
       globals: {
-        ...globals.browser,
         ...globals.node,
+        ...globals.jest,
       },
-    },
-  },
-  {
-    // Configuración para archivos TypeScript
-    files: ['**/*.ts'],
-    languageOptions: {
-      parser: tsParser,
+      ecmaVersion: 5,
+      sourceType: 'module',
       parserOptions: {
-        project: true, // Usa el tsconfig.json más cercano
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
-    },
-    plugins: {
-      '@typescript-eslint': tseslint,
-    },
-    rules: {
-      ...tseslint.configs.recommended.rules,
-      // Aquí puedes agregar reglas personalizadas de TypeScript
     },
   },
   {
-    // Configuración de Prettier para todos los archivos
-    files: ['**/*.{js,ts}'],
-    plugins: {
-      prettier: eslintPluginPrettier,
-    },
     rules: {
-      'prettier/prettier': 'error',
-      'no-unused-vars': ['warn'],
-      "@typescript-eslint/no-unused-vars": "warn",
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      /* '@typescript-eslint/no-unsafe-assignment': 'warn', */
     },
   },
-];
+);

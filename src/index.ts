@@ -3,6 +3,8 @@ import helmet from 'helmet'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import connectDb from './infraestructure/config/database'
+import projectRoutes from './presentation/controllers/project.controller'
+import 'reflect-metadata'
 
 dotenv.config()
 
@@ -22,6 +24,8 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 	console.log(`Request URL: ${req.originalUrl}`)
 	next()
 })
+
+app.use('/api/projects', projectRoutes)
 
 // Rutas
 app.get('/api', (req: Request, res: Response) => {

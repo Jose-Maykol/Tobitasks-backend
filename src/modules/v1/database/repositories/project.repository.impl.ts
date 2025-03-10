@@ -2,10 +2,9 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Project } from '../schemas/projects/project.schema'
 import { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
-import { IProjectRepository } from '../../../domain/repositories/project.repository'
 
 @Injectable()
-export class ProjectRepository implements IProjectRepository {
+export class ProjectRepository {
 	constructor(
 		@InjectModel(Project.name) private projectModel: Model<Project>
 	) {}

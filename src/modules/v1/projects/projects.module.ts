@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { ProjectsService } from './application/projects.service'
 import { MongooseModule } from '@nestjs/mongoose'
-import { ProjectSchema } from './infraestructure/persistence/schemas/projects/project.schema'
-import { ProjectsController } from './interface/http/controllers/projects.controller'
+import { ProjectsController } from './controllers/projects.controller'
+import { ProjectSchema } from '../database/schemas/projects/project.schema'
+import { ProjectsService } from './services/projects.service'
 
 @Module({
 	imports: [

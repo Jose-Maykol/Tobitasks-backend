@@ -9,7 +9,7 @@ export class ProjectRepository {
 		@InjectModel(Project.name) private projectModel: Model<Project>
 	) {}
 
-	async create(data): Promise<Project> {
+	async create(data: Partial<Project>): Promise<Project> {
 		const createdProject = new this.projectModel(data)
 		return createdProject.save()
 	}
